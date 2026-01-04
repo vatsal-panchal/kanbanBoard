@@ -1,25 +1,42 @@
 const todo = document.querySelector("#todo");
 const progress = document.querySelector("#progress");
 const done = document.querySelector("#done");
-const tasks = document.querySelectorAll(".task");
+
 let dragElement = null;
-tasks.forEach((task) => {
-  task.addEventListener("drag", (e) => {
+
+/* update task count */
+function updateCounts() {
+  [todo, progress, done].forEach((col) => {
+    const count = col.querySelector(".right");
+    count.textContent = col.querySelectorAll(".task").length;
+  });
+}
+
+/* save HTML to localStorage */
+function saveData() {
+  localStorage.setItem("todoData", todo.innerHTML);
+  localStorage.setItem("progressData", progress.innerHTML);
+  localStorage.setItem("doneData", done.innerHTML);
+}
+
+/* load HTML from localStorage */
+function loadData() {
+  if (localStorage.getItem("todoData") !== null) {
+    todo.innerHTML = localStorage.getItem("todoData");
+    progress.innerHTML = localStorage.getItem("progressData");
+    done.innerHTML = localStorage.getItem("doneData");
+  }
+}
+
+/* drag start */
+function addDragEvents(task) {
+  task.addEventListener("dragstart", () => {
     dragElement = task;
   });
-});
+}
 
-function addDragEventsOnColumn(column) {
-  column.addEventListener("dragenter", (e) => {
-    e.preventDefault();
-    column.classList.add("hover-over");
-  });
-
-  column.addEventListener("dragleave", (e) => {
-    e.preventDefault();
-    column.classList.remove("hover-over");
-  });
-
+/* enable drop on column */
+function enableColumnDrag(column) {
   column.addEventListener("dragover", (e) => {
     e.preventDefault();
   });
@@ -27,15 +44,17 @@ function addDragEventsOnColumn(column) {
   column.addEventListener("drop", (e) => {
     e.preventDefault();
     column.appendChild(dragElement);
-    column.classList.remove("hover-over");
+    updateCounts();
+    saveData();
   });
 }
 
-addDragEventsOnColumn(todo);
-addDragEventsOnColumn(progress);
-addDragEventsOnColumn(done);
+/* setup drag on columns */
+enableColumnDrag(todo);
+enableColumnDrag(progress);
+enableColumnDrag(done);
 
-// open modal logic
+/* modal controls */
 const togglemodalBtn = document.querySelector("#toggle-modal");
 const modalBg = document.querySelector(".modal .bg");
 const modal = document.querySelector(".modal");
@@ -49,28 +68,56 @@ modalBg.addEventListener("click", () => {
   modal.classList.remove("active");
 });
 
+/* add new task */
 addTaskbBtn.addEventListener("click", () => {
-  const taskTitle = document.querySelector("#task-title-input").value;
-  const taskDesc = document.querySelector("#task-desc-input").value;
-  console.log(taskTitle, taskDesc);
+  const titleInput = document.querySelector("#task-title-input");
+  const descInput = document.querySelector("#task-desc-input");
 
-  const div = document.createElement("div");
-  div.classList.add("task");
-  div.setAttribute("draggable", true);
+  const taskTitle = titleInput.value;
+  const taskDesc = descInput.value;
 
-  div.innerHTML = `
-   <h2>${taskTitle}</h2>
-            <p>${taskDesc}</p>
-              <button>delete</button>
-  `;
+  if (taskTitle.trim() !== "") {
+    const task = document.createElement("div");
+    task.classList.add("task");
+    task.setAttribute("draggable", true);
 
-  todo.append(div);
+    task.innerHTML = `
+      <h2>${taskTitle}</h2>
+      <p>${taskDesc}</p>
+      <button class="delete-btn">delete</button>
+    `;
 
-  div.addEventListener("drag", (e) => {
-    dragElement = div;
-  });
+    addDragEvents(task);
 
-  modal.classList.remove("active");
+    todo.append(task);
+    updateCounts();
+    saveData();
+
+    titleInput.value = "";
+    descInput.value = "";
+
+    modal.classList.remove("active");
+  } else {
+    alert("Enter Task");
+  }
 });
 
-// open modal logic
+/* delete task */
+[todo, progress, done].forEach((col) => {
+  col.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-btn")) {
+      e.target.parentElement.remove();
+      updateCounts();
+      saveData();
+    }
+  });
+});
+
+/* initial load */
+loadData();
+updateCounts();
+
+/* re-attach drag */
+document.querySelectorAll(".task").forEach((task) => {
+  addDragEvents(task);
+});
