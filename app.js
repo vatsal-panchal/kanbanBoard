@@ -96,7 +96,7 @@ addTaskbBtn.addEventListener("click", () => {
   const task = document.createElement("div");
   task.classList.add("task");
   task.setAttribute("draggable", true);
-  task.innerHTML = `<h4>${taskTitle}</h4><p>${taskDesc}</p><button class="delete-btn">delete</button>`;
+  task.innerHTML = `<h4>${taskTitle}</h4><h6>${taskDesc}</h6><button class="delete-btn">delete</button>`;
 
   addDragEvents(task);
   todo.appendChild(task);

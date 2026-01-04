@@ -6,6 +6,7 @@
   box-sizing: border-box;
   text-transform: capitalize;
   font-family: "Poppins", sans-serif;
+  font-weight: normal;
 }
 
 html,
@@ -124,6 +125,11 @@ section .task-column .task button {
   outline: none;
   background-color: var(--delete-color);
   color: var(--bg-text-color);
+}
+
+.task{
+  display: flex;
+  gap: var(--padding-sm);
 }
 
 .modal {
