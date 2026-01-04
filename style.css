@@ -27,6 +27,7 @@ main {
   --bg-text-color: #fff;
   --bg-button-color: #1a1a1a;
   --bg-task-color: #2a2a2a;
+  --delete-color: red;
 
   /*padding*/
   --nav-padding: 15px 30px;
@@ -82,12 +83,20 @@ section .task-column {
   display: flex;
   flex-direction: column;
   gap: var(--padding-md);
+  border-radius: var(--border-radius-sm);
+    transition: all ease 0.3s;
+
 }
 
 section .task-column .heading {
   width: 100%;
   display: flex;
   justify-content: space-between;
+}
+
+section .task-column.hover-over{
+  border: 2px dashed var(--bg-text-color);
+  scale: 1.03;
 }
 
 section .task-column .task {
@@ -97,14 +106,17 @@ section .task-column .task {
   display: flex;
   flex-direction: column;
   padding: var(--padding-md);
+  cursor: grab;
 }
 
-section .task-column .task button{
+section .task-column .task button {
   align-self: flex-end;
   padding: var(--padding-sm) var(--padding-md);
   border-radius: var(--border-radius-sm);
   border: none;
   font-weight: 500;
-cursor: pointer;
-outline: none;
+  cursor: pointer;
+  outline: none;
+  background-color: var(--delete-color);
+  color: var(--bg-text-color);
 }

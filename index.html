@@ -15,7 +15,7 @@
       </nav>
       <!-- hero part -->
       <section class="board">
-        <div class="task-column">
+        <div id="todo" class="task-column">
           <div class="heading">
             <div class="left">Todo</div>
             <div class="right">Count</div>
@@ -23,19 +23,25 @@
 
           <!-- task -->
 
-          <div class="task">
-          <h2>task 1</h2>
-          <p>task description</p>
-          <button>delete</button>
+          <div class="task" draggable="true">
+            <h2>task 1</h2>
+            <p>task description</p>
+            <button>delete</button>
+          </div>
+
+          <div class="task" draggable="true">
+            <h2>task 2</h2>
+            <p>task description</p>
+            <button>delete</button>
           </div>
         </div>
-        <div class="task-column">
+        <div id="progress" class="task-column">
           <div class="heading">
             <div class="left">In Progress</div>
             <div class="right">Count</div>
           </div>
         </div>
-        <div class="task-column">
+        <div id="done" class="task-column">
           <div class="heading">
             <div class="left">Done</div>
             <div class="right">Count</div>
