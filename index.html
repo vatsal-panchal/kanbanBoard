@@ -10,7 +10,7 @@
     <main>
       <!-- navbar section -->
       <nav>
-        <div class="left">kanban</div>
+        <div class="left" id="logo">kanban</div>
         <div class="right"><button id="toggle-modal">Add New Task</button></div>
       </nav>
       <!-- hero part -->
@@ -41,8 +41,16 @@
     <div class="modal add-new-task">
       <div class="bg"></div>
       <div class="center">
-        <input type="text" placeholder="Task Title" id="task-title-input" required/>
-        <textarea placeholder="Task Description" id="task-desc-input" ></textarea>
+        <input
+          type="text"
+          placeholder="Task Title"
+          id="task-title-input"
+          required
+        />
+        <textarea
+          placeholder="Task Description"
+          id="task-desc-input"
+        ></textarea>
         <button id="add-new-task" class="add-task-btn">Add Task</button>
       </div>
     </div>
