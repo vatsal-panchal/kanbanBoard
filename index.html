@@ -11,7 +11,7 @@
       <!-- navbar section -->
       <nav>
         <div class="left">kanban</div>
-        <div class="right"><button>Add New Task</button></div>
+        <div class="right"><button id="toggle-modal">Add New Task</button></div>
       </nav>
       <!-- hero part -->
       <section class="board">
@@ -25,12 +25,6 @@
 
           <div class="task" draggable="true">
             <h2>task 1</h2>
-            <p>task description</p>
-            <button>delete</button>
-          </div>
-
-          <div class="task" draggable="true">
-            <h2>task 2</h2>
             <p>task description</p>
             <button>delete</button>
           </div>
@@ -49,6 +43,15 @@
         </div>
       </section>
     </main>
+
+    <div class="modal add-new-task">
+      <div class="bg"></div>
+      <div class="center">
+        <input type="text" placeholder="Task Title" id="task-title-input"/>
+        <textarea placeholder="Task Description" id="task-desc-input"></textarea>
+        <button id="add-new-task" class="add-task-btn">Add Task</button>
+      </div>
+    </div>
     <script src="app.js"></script>
   </body>
 </html>
