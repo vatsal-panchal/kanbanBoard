@@ -1,129 +1,105 @@
-// columns select
 const todo = document.querySelector("#todo");
 const progress = document.querySelector("#progress");
 const done = document.querySelector("#done");
 
-// currently dragged task reference
+const modal = document.querySelector(".modal");
+const modalBg = document.querySelector(".bg");
+const toggleModalBtn = document.querySelector("#toggle-modal");
+
+const taskTitle = document.querySelector("#task-title-input");
+const taskDes = document.querySelector("#task-desc-input");
+const addTaskBtn = document.querySelector("#add-new-task");
+
 let dragElement = null;
 
-// add drag event on each task
-function addDragEvents(task) {
-  task.addEventListener("drag", () => {
-    dragElement = task;
-  });
-}
-
-// enable drag & drop on columns
-function addDragEventsOnColumn(column) {
-  column.addEventListener("dragenter", (e) => {
-    e.preventDefault();
-    column.classList.add("hover-over");
-  });
-
-  column.addEventListener("dragleave", (e) => {
-    e.preventDefault();
-    column.classList.remove("hover-over");
-  });
-
-  column.addEventListener("dragover", (e) => {
-    e.preventDefault();
-  });
-
-  column.addEventListener("drop", () => {
-    column.appendChild(dragElement);
-    column.classList.remove("hover-over");
-    updateCounts();
-    saveData();
-  });
-}
-
-// apply drag logic on all columns
-addDragEventsOnColumn(todo);
-addDragEventsOnColumn(progress);
-addDragEventsOnColumn(done);
-
-// update task count in each column
-function updateCounts() {
-  [todo, progress, done].forEach((col) => {
-    const count = col.querySelector(".right");
-    if (count) count.textContent = col.querySelectorAll(".task").length;
-  });
-}
-
-// save board data to localStorage
-function saveData() {
-  localStorage.setItem("todoData", todo.innerHTML);
-  localStorage.setItem("progressData", progress.innerHTML);
-  localStorage.setItem("doneData", done.innerHTML);
-}
-
-// load board data from localStorage
-function loadData() {
-  if (localStorage.getItem("todoData")) {
-    todo.innerHTML = localStorage.getItem("todoData");
-    progress.innerHTML = localStorage.getItem("progressData");
-    done.innerHTML = localStorage.getItem("doneData");
-  }
-}
-
-// modal elements
-const togglemodalBtn = document.querySelector("#toggle-modal");
-const modalBg = document.querySelector(".modal .bg");
-const modal = document.querySelector(".modal");
-const addTaskbBtn = document.querySelector("#add-new-task");
-
-// open / close modal
-togglemodalBtn.addEventListener("click", () => {
-  modal.classList.toggle("active");
+// ========== MODAL ==========
+toggleModalBtn.addEventListener("click", () => {
+  modal.classList.add("active");
 });
 
 modalBg.addEventListener("click", () => {
   modal.classList.remove("active");
 });
 
-// add new task
-addTaskbBtn.addEventListener("click", () => {
-  const titleInput = document.querySelector("#task-title-input");
-  const descInput = document.querySelector("#task-desc-input");
-  const taskTitle = titleInput.value.trim();
-  const taskDesc = descInput.value.trim();
+// ========== ADD TASK ==========
+addTaskBtn.addEventListener("click", () => {
+  const title = taskTitle.value.trim();
+  const desc = taskDes.value.trim();
 
-  if (taskTitle === "") {
-    alert("Enter Task");
-    return;
-  }
+  if (!title) return;
 
   const task = document.createElement("div");
-  task.classList.add("task");
-  task.setAttribute("draggable", true);
-  task.innerHTML = `<h4>${taskTitle}</h4><h6>${taskDesc}</h6><button class="delete-btn">delete</button>`;
+  task.className = "task";
+  task.draggable = true;
 
-  addDragEvents(task);
+  task.innerHTML = `
+    <h4>${title}</h4>
+    <h5>${desc}</h5>
+    <button class="deleteBtn">delete</button>
+  `;
+
   todo.appendChild(task);
-  updateCounts();
   saveData();
 
-  titleInput.value = "";
-  descInput.value = "";
+  taskTitle.value = "";
+  taskDes.value = "";
   modal.classList.remove("active");
 });
 
-// delete task on button click
-[todo, progress, done].forEach((col) => {
-  col.addEventListener("click", (e) => {
-    if (e.target.classList.contains("delete-btn")) {
-      e.target.parentElement.remove();
-      updateCounts();
+// ========== EVENT DELEGATION ==========
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("deleteBtn")) {
+    e.target.closest(".task").remove();
+    saveData();
+  }
+});
+
+document.addEventListener("dragstart", (e) => {
+  if (e.target.classList.contains("task")) {
+    dragElement = e.target;
+  }
+});
+
+// ========== COLUMN DRAG & DROP ==========
+[todo, progress, done].forEach((column) => {
+  column.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    column.classList.add("hover-over");
+  });
+
+  column.addEventListener("dragleave", () => {
+    column.classList.remove("hover-over");
+  });
+
+  column.addEventListener("drop", () => {
+    if (dragElement) {
+      column.appendChild(dragElement);
+      dragElement = null;
       saveData();
     }
+    column.classList.remove("hover-over");
   });
 });
 
-// initial load from storage
-loadData();
-updateCounts();
+// ========== SAVE ==========
+function saveData() {
+  const data = {
+    todo: todo.innerHTML,
+    progress: progress.innerHTML,
+    done: done.innerHTML,
+  };
 
-// reattach drag events after reload
-document.querySelectorAll(".task").forEach((task) => {
-  addDragEvents(task);
-});
+  localStorage.setItem("taskData", JSON.stringify(data));
+}
+
+// ========== LOAD ==========
+function loadData() {
+  const data = JSON.parse(localStorage.getItem("taskData"));
+  if (!data) return;
+
+  todo.innerHTML = data.todo;
+  progress.innerHTML = data.progress;
+  done.innerHTML = data.done;
+}
+
+loadData();
