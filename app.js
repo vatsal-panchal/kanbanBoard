@@ -1,3 +1,4 @@
+// ========== DOM ==========
 const todo = document.querySelector("#todo");
 const progress = document.querySelector("#progress");
 const done = document.querySelector("#done");
@@ -39,7 +40,9 @@ addTaskBtn.addEventListener("click", () => {
   `;
 
   todo.appendChild(task);
+
   saveData();
+  updateCounts();
 
   taskTitle.value = "";
   taskDes.value = "";
@@ -51,6 +54,7 @@ document.addEventListener("click", (e) => {
   if (e.target.classList.contains("deleteBtn")) {
     e.target.closest(".task").remove();
     saveData();
+    updateCounts();
   }
 });
 
@@ -76,10 +80,23 @@ document.addEventListener("dragstart", (e) => {
       column.appendChild(dragElement);
       dragElement = null;
       saveData();
+      updateCounts();
     }
     column.classList.remove("hover-over");
   });
 });
+
+// ========== COUNT UPDATE ==========
+function updateCounts() {
+  todo.querySelector(".heading .right").innerText =
+    todo.querySelectorAll(".task").length;
+
+  progress.querySelector(".heading .right").innerText =
+    progress.querySelectorAll(".task").length;
+
+  done.querySelector(".heading .right").innerText =
+    done.querySelectorAll(".task").length;
+}
 
 // ========== SAVE ==========
 function saveData() {
@@ -102,4 +119,6 @@ function loadData() {
   done.innerHTML = data.done;
 }
 
+// ========== INIT ==========
 loadData();
+updateCounts();
